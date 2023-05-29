@@ -5,20 +5,29 @@ import Contacts from './Contacts/Contacts';
 import { Base } from './App.styled';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
+const CONTACTS_KEY = 'contacts';
 class App extends Component {
   state = {
-    contacts: [
-      { id: 'id-1', name: 'Rosie Simpson', number: '+380974591256' },
-      { id: 'id-2', name: 'Hermione Kline', number: '+380974438912' },
-      { id: 'id-3', name: 'Eden Clements', number: '+380936451779' },
-      { id: 'id-4', name: 'Annie Copeland', number: '+380982279126' },
-      { id: 'id-5', name: 'Alex Dubovyi', number: '+380631065900' },
-      { id: 'id-6', name: 'Ambulance', number: '101' },
-      { id: 'id-7', name: 'Police State', number: '102' },
-      { id: 'id-8', name: 'Pamela Anderson', number: '+380634567890' },
-    ],
+    contacts: [],
     filter: '',
   };
+  componentDidMount() {
+    const parse = JSON.parse(localStorage.getItem(CONTACTS_KEY));
+    if (parse && parse.length > 0) {
+      this.setState({
+        contacts: parse,
+      });
+    } else {
+      this.setState({
+        contacts: [],
+      });
+    }
+  }
+  componentDidUpdate(_, prevState) {
+    if (prevState.contacts !== this.state.contacts)
+      localStorage.setItem(CONTACTS_KEY, JSON.stringify(this.state.contacts));
+  }
+  // ==
 
   handleAddContact = (name, number) => {
     const { contacts } = this.state;
